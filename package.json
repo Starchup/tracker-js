@@ -1,0 +1,26 @@
+{
+    "name": "Starchup Tracker JS",
+    "version": "0.0.1",
+    "description": "Starchup Analytics Tracker middleware for javascript apps",
+    "main": "tracker.js",
+    "author": {
+        "name": "Starchup Inc",
+        "email": "geoffroy@starchup.com",
+        "url": "http://starchup.com"
+    },
+    "keywords": [
+        "starchup"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/Starchup/tracker-js.git"
+    },
+    "engines": {
+        "node": ">= 0.10"
+    },
+    "scripts": {},
+    "bugs": {
+        "url": "https://github.com/Starchup/tracker-js/issues"
+    },
+    "homepage": "https://github.com/Starchup/tracker-js#readme"
+}
