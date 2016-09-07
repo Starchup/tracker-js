@@ -1,6 +1,6 @@
 {
-    "name": "Starchup Tracker JS",
-    "version": "0.0.1",
+    "name": "StarchupTrackerJS",
+    "version": "0.0.2",
     "description": "Starchup Analytics Tracker middleware for javascript apps",
     "main": "tracker.js",
     "author": {
