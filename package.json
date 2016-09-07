@@ -1,0 +1,18 @@
+{
+    "name": "tracker-js",
+    "version": "1.0.0",
+    "homepage": "https://github.com/Starchup/tracker-js",
+    "authors": [
+        "Geoffroy Lesage <geoffroy@starchup.com>"
+    ],
+    "description": "Starchup Analytics Tracker middleware for javascript apps",
+    "main": "tracker.js",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/Starchup/web-ordering"
+    },
+    "engines": {
+        "node": ">=0.4.5"
+    }
+}
