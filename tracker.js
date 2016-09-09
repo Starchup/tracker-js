@@ -56,8 +56,6 @@
         if (!customerId && !agentId) throwError("Missing user Id");
         if (!token) throwError("Missing token");
 
-        if (!globals.deviceId) throwError("Invalid device");
-
         globals.access_token = token;
         globals.customerId = customerId;
         globals.agentId = agentId;
@@ -79,7 +77,11 @@
                     data.deviceId = d.deviceId;
                 });
             }
-            request("PUT", "DeviceData/" + globals.deviceId, data, cb);
+            if (!globals.deviceId) {
+                globals.deviceId = data.deviceId;
+                cb();
+            }
+            else request("PUT", "DeviceData/" + globals.deviceId, data, cb);
         };
         if (customerId) getCustomerDevices(callback);
         else if (agentId) getAgentDevices(callback);
