@@ -5,6 +5,7 @@
     var kDEVICE_ID_COOKIE = "tracker_device_id";
     var globals = {
         customerId: null,
+        agentId: null,
         deviceId: null,
         access_token: null,
         cleanerIdentifier: null
@@ -15,11 +16,12 @@
      *      Public API       *
      *                       *
      *************************/
-    var StarchupTracker = function(cleanerIdentifier) {
+    var StarchupTracker = function(cleanerIdentifier, agentId) {
         globals.cleanerIdentifier = cleanerIdentifier;
 
         var devId = getCookie(kDEVICE_ID_COOKIE);
         if (devId && devId.length > 0) globals.deviceId = devId;
+        if (agentId) globals.agentId = agentId;
 
         return this;
     }
@@ -38,6 +40,7 @@
         if (utmm && utms.length > 0) event.utmMedium = utmm;
         if (utmc && utms.length > 0) event.utmCampaign = utmc;
 
+        if (globals.agentId) event.agentId = globals.agentId;
         if (globals.customerId) event.customerId = globals.customerId;
         if (globals.deviceId) event.deviceId = globals.deviceId;
 
@@ -48,18 +51,19 @@
             });
         } else request("POST", "Events", event, cb);
     };
-    var logIn = function(customerId, token, cb) {
+    var logIn = function(customerId, agentId, token, cb) {
         if (!cb || cb === undefined) cb = backupCb;
 
-        if (!customerId) throwError("Missing customerId");
+        if (!customerId && !agentId) throwError("Missing user Id");
         if (!token) throwError("Missing token");
 
         if (!globals.deviceId) throwError("Invalid device");
 
         globals.access_token = token;
         globals.customerId = customerId;
+        globals.agentId = agentId;
 
-        getCustomerDevices(function(err, res) {
+        var callback = function(err, res) {
             var data = {
                 customerId: customerId
             };
@@ -68,6 +72,7 @@
                 data.deviceId = res[0]["deviceId"];
                 res.forEach(function(d) {
                     if (d.customerId != globals.customerId) return;
+                    if (d.agentId != globals.agentId) return;
                     if (!d.id || !d.deviceId) return;
                     if (d.id === firstId) return;
                     if (d.id > firstId) return;
@@ -76,7 +81,9 @@
                 });
             }
             request("PUT", "DeviceData/" + globals.deviceId, data, cb);
-        });
+        };
+        if (customerId) getCustomerDevices(callback);
+        else if (agentId) getAgentDevices(callback);
     };
     var logOut = function() {
         globals.customerId = null;
@@ -104,16 +111,24 @@
      *************************/
     var backupCb = function() {}
 
-    var getCustomerDevices = function(cb) {
+    var getDevices = function(where, cb) {
         if (!cb || cb === undefined) cb = backupCb;
-
-        if (!globals.customerId) throwError("Missing customerId");
         var query = {
-            "where": {
-                "customerId": globals.customerId
-            }
+            "where": where
         };
         request("GET", "DeviceData", query, cb);
+    }
+    var getCustomerDevices = function(cb) {
+        if (!globals.customerId) throwError("Missing customerId");
+        getDevices({
+            "customerId": globals.customerId
+        }, cb);
+    };
+    var getAgentDevices = function(cb) {
+        if (!globals.agentId) throwError("Missing agentId");
+        getDevices({
+            "agentId": globals.agentId
+        }, cb);
     };
     var getApiBasedOnHost = function() {
         var domain = window.location.hostname;
@@ -163,6 +178,7 @@
 
         var dd = getBrowserData();
         if (globals.customerId) dd.customerId = globals.customerId;
+        if (globals.agentId) dd.agentId = globals.agentId;
 
         dd.deviceId = guid();
         dd.ip = findIP();
