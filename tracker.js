@@ -16,12 +16,11 @@
      *      Public API       *
      *                       *
      *************************/
-    var StarchupTracker = function(cleanerIdentifier, agentId) {
+    var StarchupTracker = function(cleanerIdentifier) {
         globals.cleanerIdentifier = cleanerIdentifier;
 
         var devId = getCookie(kDEVICE_ID_COOKIE);
         if (devId && devId.length > 0) globals.deviceId = devId;
-        if (agentId) globals.agentId = agentId;
 
         return this;
     }
