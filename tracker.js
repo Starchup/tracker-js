@@ -80,8 +80,7 @@
             if (!globals.deviceId) {
                 globals.deviceId = data.deviceId;
                 cb();
-            }
-            else request("PUT", "DeviceData/" + globals.deviceId, data, cb);
+            } else request("PUT", "DeviceData/" + globals.deviceId, data, cb);
         };
         if (customerId) getCustomerDevices(callback);
         else if (agentId) getAgentDevices(callback);
@@ -137,7 +136,7 @@
         if (domain === "localhost") return "http://dev.starchup.com:3005/api";
         else if (domain === "dev.starchup.com") return "http://dev.starchup.com:3005/api";
         else if (domain === "stage.starchup.com") return "https://stage.starchup.com:3004/api";
-        else return "https://api.starchup.com:3003/api";
+        else return "https://tracker.starchup.com/api";
     }
 
     var request = function(method, resource, data, cb) {
