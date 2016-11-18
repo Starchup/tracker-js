@@ -7,6 +7,7 @@
         customerId: null,
         agentId: null,
         deviceId: null,
+        facilityId: null,
         access_token: null,
         cleanerIdentifier: null
     }
@@ -16,8 +17,9 @@
      *      Public API       *
      *                       *
      *************************/
-    var StarchupTracker = function(cleanerIdentifier) {
+    var StarchupTracker = function(cleanerIdentifier, facilityId) {
         globals.cleanerIdentifier = cleanerIdentifier;
+        globals.facilityId = facilityId;
 
         var devId = getCookie(kDEVICE_ID_COOKIE);
         if (devId && devId.length > 0) globals.deviceId = devId;
@@ -42,6 +44,7 @@
         if (globals.agentId) event.agentId = globals.agentId;
         if (globals.customerId) event.customerId = globals.customerId;
         if (globals.deviceId) event.deviceId = globals.deviceId;
+        if (globals.facilityId) event.facilityId = globals.facilityId;
 
         if (!globals.deviceId) {
             createDevice(function(err, device) {
