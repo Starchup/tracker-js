@@ -83,11 +83,9 @@
                     firstId = d.id;
                     data.deviceId = d.deviceId;
                 });
-                if (!globals.deviceId) {
-                    globals.deviceId = firstId;
-                    cb();
-                } else request("PUT", "DeviceData/" + globals.deviceId, data, cb);
-            } else cb();
+                if (!globals.deviceId) globals.deviceId = firstId;
+            }
+            request("PUT", "DeviceData/" + globals.deviceId, data, cb);
         };
         if (customerId) getCustomerDevices(callback);
         else if (agentId) getAgentDevices(callback);
