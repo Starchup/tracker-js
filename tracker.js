@@ -198,7 +198,7 @@
 
         dd.deviceId = guid();
         dd.ip = findIP();
-        dd.app = globals.cleanerIdentifier;
+        dd.identifier = globals.cleanerIdentifier;
 
         request("POST", "DeviceData", dd, function(err, res) {
             if (res && res.id) {
