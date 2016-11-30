@@ -9,7 +9,8 @@
         deviceId: null,
         facilityId: null,
         access_token: null,
-        cleanerIdentifier: null
+        cleanerIdentifier: null,
+        source: null
     }
 
     /*************************
@@ -17,9 +18,10 @@
      *      Public API       *
      *                       *
      *************************/
-    var StarchupTracker = function(cleanerIdentifier, facilityId) {
+    var StarchupTracker = function(cleanerIdentifier, facilityId, source) {
         globals.cleanerIdentifier = cleanerIdentifier;
         globals.facilityId = facilityId;
+        globals.source = source;
 
         var devId = getCookie(kDEVICE_ID_COOKIE);
         if (devId && devId.length > 0) globals.deviceId = devId;
@@ -45,6 +47,7 @@
         if (globals.customerId) event.customerId = globals.customerId;
         if (globals.deviceId) event.deviceId = globals.deviceId;
         if (globals.facilityId) event.facilityId = globals.facilityId;
+        if (globals.source) event.source = globals.source;
 
         if (!globals.deviceId) {
             createDevice(function(err, device) {
@@ -124,13 +127,15 @@
     var getCustomerDevices = function(cb) {
         if (!globals.customerId) throwError("Missing customerId");
         getDevices({
-            "customerId": globals.customerId
+            customerId: globals.customerId,
+            source: globals.source
         }, cb);
     };
     var getAgentDevices = function(cb) {
         if (!globals.agentId) throwError("Missing agentId");
         getDevices({
-            "agentId": globals.agentId
+            "agentId": globals.agentId,
+            source: globals.source
         }, cb);
     };
     var getApiBasedOnHost = function() {
@@ -151,8 +156,15 @@
 
         var api = getApiBasedOnHost();
         var requestURL = api + "/" + resource;
+
+        if (data) data = JSON.stringify(data);
+
         if (globals.access_token) {
             requestURL = requestURL + "?access_token=" + globals.access_token;
+        }
+
+        if (method === "GET" && data) {
+            requestURL = requestURL + (globals.access_token ? "&" : "?") + "filter=" + data;
         }
 
         var xhttp = new XMLHttpRequest();
@@ -164,7 +176,7 @@
         }
         xhttp.open(method, requestURL, true);
         xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.send(JSON.stringify(data));
+        xhttp.send(method !== "GET" ? data : null);
     };
 
     function throwError(message) {
@@ -182,6 +194,7 @@
         var dd = getBrowserData();
         if (globals.customerId) dd.customerId = globals.customerId;
         if (globals.agentId) dd.agentId = globals.agentId;
+        if (globals.source) dd.source = globals.source;
 
         dd.deviceId = guid();
         dd.ip = findIP();
@@ -297,8 +310,7 @@
 
         return {
             browser: browserName,
-            appVersion: fullVersion,
-            codeName: navigator.userAgent,
+            browserVersion: fullVersion,
             os: getOS()
         };
     }
