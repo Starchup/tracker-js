@@ -68,7 +68,8 @@
 
         var callback = function(err, res) {
             var data = {
-                customerId: customerId
+                customerId: customerId,
+                agentId: agentId
             };
             if (res && res.length > 0) {
                 var firstId = res[0]["id"];
@@ -82,11 +83,11 @@
                     firstId = d.id;
                     data.deviceId = d.deviceId;
                 });
-            }
-            if (!globals.deviceId) {
-                globals.deviceId = data.deviceId;
-                cb();
-            } else request("PUT", "DeviceData/" + globals.deviceId, data, cb);
+                if (!globals.deviceId) {
+                    globals.deviceId = firstId;
+                    cb();
+                } else request("PUT", "DeviceData/" + globals.deviceId, data, cb);
+            } else cb();
         };
         if (customerId) getCustomerDevices(callback);
         else if (agentId) getAgentDevices(callback);
