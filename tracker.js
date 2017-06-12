@@ -159,7 +159,7 @@
         if (window.location.port.length > 0) domain = domain.replace(":" + window.location.port, "");
         if (domain === "localhost") return "http://dev.starchup.com:3005/api";
         else if (domain === "dev.starchup.com") return "http://dev.starchup.com:3005/api";
-        else if (domain === "stage.starchup.com") return "https://stage.starchup.com:3004/api";
+        else if (domain === "stage.starchup.com") return "https://sandtrack.starchup.com/api";
         else return "https://tracker.starchup.com/api";
     }
 
