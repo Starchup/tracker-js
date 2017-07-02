@@ -56,8 +56,12 @@
         {
             createDevice(function (err, device)
             {
-                if (device) event.deviceId = device.id;
-                request("POST", "Events", event, cb);
+                if (!device) cb();
+                else
+                {
+                    event.deviceId = device.id;
+                    request("POST", "Events", event, cb);
+                }
             });
         }
         else request("POST", "Events", event, cb);
@@ -75,6 +79,8 @@
 
         var callback = function (err, res)
         {
+            if (err || !res) return cb();
+
             var data = {
                 customerId: customerId,
                 agentId: agentId
