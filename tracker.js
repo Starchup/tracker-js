@@ -32,16 +32,17 @@
     }
     var trackEvent = function (event, cb)
     {
-        checkAndEngageLock(function ()
+        if (globals.busy) return waitForLock(function ()
         {
             trackEvent(event, cb);
         });
+        globals.busy = true;
 
         if (!cb || cb === undefined) cb = backupCb;
 
         function done(err, res)
         {
-            disengageLock();
+            globals.busy = false;
             cb(err, res);
         }
 
@@ -79,16 +80,17 @@
     };
     var logIn = function (customerId, agentId, token, cb)
     {
-        checkAndEngageLock(function ()
+        if (globals.busy) return waitForLock(function ()
         {
             logIn(customerId, agentId, token, cb);
         });
+        globals.busy = true;
 
         if (!cb || cb === undefined) cb = backupCb;
 
         function done(err, res)
         {
-            disengageLock();
+            globals.busy = false;
             cb(err, res);
         }
 
@@ -157,18 +159,13 @@
      *************************/
     var backupCb = function () {}
 
-    var checkAndEngageLock = function (callback, occurence)
+    var waitForLock = function (callback, occurence)
     {
         if (occurence > 10) return callback();
         if (globals.busy) window.setTimeout(function ()
         {
             callback();
         }, 100);
-        globals.busy = true;
-    }
-    var disengageLock = function ()
-    {
-        globals.busy = false;
     }
 
     var getDevices = function (where, cb)
@@ -201,7 +198,10 @@
     {
         var domain = window.location.hostname;
         if (window.location.port.length > 0) domain = domain.replace(":" + window.location.port, "");
-        return "https://tracker.starchup.com/api";
+        if (domain === "localhost") return "http://dev.starchup.com:3005/api";
+        else if (domain === "dev.starchup.com") return "http://dev.starchup.com:3005/api";
+        else if (domain === "stage.starchup.com") return "https://sandtrack.starchup.com/api";
+        else return "https://tracker.starchup.com/api";
     }
 
     var request = function (method, resource, data, cb)
