@@ -101,8 +101,6 @@
         globals.customerId = customerId;
         globals.agentId = agentId;
 
-        if (globals.deviceId) return done();
-
         var callback = function (err, res)
         {
             if (err || !res) return done();
@@ -198,7 +196,7 @@
     {
         var domain = window.location.hostname;
         if (window.location.port.length > 0) domain = domain.replace(":" + window.location.port, "");
-        if (domain === "localhost") return "http://dev.starchup.com:3005/api";
+        if (domain === "localhost") return "http://localhost:3000/api";
         else if (domain === "dev.starchup.com") return "http://dev.starchup.com:3005/api";
         else if (domain === "stage.starchup.com") return "https://sandbox-tracker.starchup.com/api";
         else return "https://tracker.starchup.com/api";
@@ -261,7 +259,6 @@
         if (globals.agentId) dd.agentId = globals.agentId;
         if (globals.source) dd.source = globals.source;
 
-        dd.deviceId = guid();
         dd.ip = findIP();
         dd.identifier = globals.cleanerIdentifier;
 
@@ -272,20 +269,10 @@
                 globals.deviceId = res.id;
                 setCookie(kDEVICE_ID_COOKIE, res.id, 0.5);
             }
+            else console.error('Could not create tracking device');
             cb(err, res);
         });
     };
-    var guid = function ()
-    {
-        function s4()
-        {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
-    }
 
     function findIP()
     {
