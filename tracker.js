@@ -125,7 +125,17 @@
                 });
                 if (!globals.deviceId) globals.deviceId = firstId;
             }
-            request("PUT", "DeviceData/" + globals.deviceId, data, done);
+            request("PUT", "DeviceData/" + globals.deviceId, data, function (de, dr)
+            {
+                if (!de && res) return done();
+
+                // if the deviceId is wrong, create a new device
+                createDevice(function (nde, ndr)
+                {
+                    if (!nde && ndr) globals.deviceId = ndr.id;
+                    done();
+                });
+            });
         };
         if (customerId) getCustomerDevices(callback);
         else if (agentId) getAgentDevices(callback);
