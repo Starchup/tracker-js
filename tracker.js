@@ -208,8 +208,8 @@
         if (window.location.port.length > 0) domain = domain.replace(":" + window.location.port, "");
         if (domain === "localhost") return "http://localhost:3000/api";
         else if (domain === "dev.starchup.com") return "http://dev.starchup.com:3005/api";
-        else if (domain === "stage.starchup.com") return "https://sandbox-tracker.starchup.com/api";
-        else return "https://tracker.starchup.com/api";
+        else if (domain === "stage.starchup.com") return "https://sandbox.starchup.com/api";
+        else return "https://api.starchup.com/api";
     }
 
     var request = function (method, resource, data, cb)
