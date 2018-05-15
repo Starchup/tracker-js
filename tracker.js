@@ -306,7 +306,14 @@
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
             results = regex.exec(location.search);
-        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+
+        if (!results || results.length < 1) return null;
+        if (results.indexOf('http')) return null;
+
+        var finalRes = decodeURIComponent(results[1].replace(/\+/g, " "));
+
+        if (!finalRes || finalRes.length < 1) return null;
+        if (finalRes.indexOf('http')) return null;
     }
 
     function setCookie(cname, cvalue, exdays)
