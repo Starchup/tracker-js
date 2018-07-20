@@ -53,10 +53,8 @@
         var utmc = getURLParamByName('utm_campaign');
         var utmt = getURLParamByName('utm_term');
         var utmo = getURLParamByName('utm_content');
-        var ref = document.referrer;
 
         if (utms && utms.length > 0) event.utmSource = utms;
-        else if (ref && ref.length > 1) event.utmSource = ref;
         if (utmm && utmm.length > 0) event.utmMedium = utmm;
         if (utmc && utmc.length > 0) event.utmCampaign = utmc;
         if (utmt && utmt.length > 0) event.utmTerm = utmt;
@@ -307,13 +305,15 @@
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
             results = regex.exec(location.search);
 
-        if (!results || results.length < 1) return null;
-        if (results.indexOf('http')) return null;
+        if (!results || results.length < 2) return null;
 
-        var finalRes = decodeURIComponent(results[1].replace(/\+/g, " "));
+        var finalRes = decodeURIComponent(results[1]).replace(/\"/g, "");
 
         if (!finalRes || finalRes.length < 1) return null;
-        if (finalRes.indexOf('http')) return null;
+        if (finalRes.indexOf('http') > -1) return null;
+        if (finalRes === "null") return;
+
+        return finalRes;
     }
 
     function setCookie(cname, cvalue, exdays)
