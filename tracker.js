@@ -53,12 +53,14 @@
         var utmc = getURLParamByName('utm_campaign');
         var utmt = getURLParamByName('utm_term');
         var utmo = getURLParamByName('utm_content');
+        var gclid = getURLParamByName('gclid');
 
         if (utms && utms.length > 0) event.utmSource = utms;
         if (utmm && utmm.length > 0) event.utmMedium = utmm;
         if (utmc && utmc.length > 0) event.utmCampaign = utmc;
         if (utmt && utmt.length > 0) event.utmTerm = utmt;
         if (utmo && utmo.length > 0) event.utmContent = utmo;
+        if (gclid && gclid.length > 0) event.gclid = gclid;
 
         if (globals.agentId) event.agentId = globals.agentId;
         if (globals.customerId) event.customerId = globals.customerId;
